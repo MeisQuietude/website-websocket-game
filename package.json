@@ -4,12 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "clean": "npx rimraf ./build/ && npx rimraf ./log/",
-    "prebuild": "npm run clean",
-    "build": "npx tsc",
-    "postbuild": "npx ts-node ./tools/build",
-    "prod": "node ./app.js",
-    "dev": "npx nodemon app/server.js",
+    "build": "npx tsc -p app && npx tsc -p app-ws",
+    "prestart": "npm run build",
+    "start": "npm run dev",
+    "dev": "npx ts-node app/src/server.ts",
     "test": "npx jest --findRelatedTests"
   },
   "author": "Stepan Savelyev",
