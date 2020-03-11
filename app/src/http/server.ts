@@ -5,7 +5,7 @@ import router from "./routes";
 
 const app = express();
 
-// HTTP Route
+// HTTP Route Logger
 app.use(morgan("dev"));
 
 app.use(router);
