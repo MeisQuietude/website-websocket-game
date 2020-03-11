@@ -7,7 +7,7 @@ const router = Router();
 router.use("/static", express.static(path.join(__dirname, "../../resource/public")));
 
 router.get('/', (req: Request, res: Response) => {
-   res.send("Hello World1!");
+   res.render("index");
 });
 
 router.all(/.*/, (req: Request, res: Response) => {
