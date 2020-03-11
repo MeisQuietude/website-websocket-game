@@ -4,22 +4,26 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build": "npx tsc -p app && npx tsc -p app-ws",
-    "prestart": "npm run build",
-    "start": "npm run dev",
-    "dev": "npx ts-node app/src/server.ts",
-    "test": "npx jest --findRelatedTests"
+    "start": "concurrently npm:watch-http npm:watch-ws",
+    "dev": "tsc -p app/tsconfig.dev.json && npm run watch",
+    "watch": "./node_modules/nodemon/bin/nodemon.js",
+    "watch-http": "ts-node --project app/tsconfig.dev.json app/src/http/server.ts",
+    "watch-ws": "ts-node --project app/tsconfig.dev.json app/src/ws/server.ts"
   },
   "author": "Stepan Savelyev",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "morgan": "^1.9.1",
+    "typescript": "^3.8.3",
     "ws": "^7.2.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",
+    "@types/morgan": "^1.9.0",
     "@types/ws": "^7.2.2",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.8.3"
+    "concurrently": "^5.1.0",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.6.2"
   }
 }
