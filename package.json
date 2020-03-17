@@ -2,11 +2,10 @@
   "name": "kn",
   "version": "0.1.0",
   "description": "",
-  "main": "app.js",
   "scripts": {
     "start": "concurrently npm:watch-http npm:watch-ws",
-    "dev": "tsc -p app/tsconfig.dev.json && npm run watch",
-    "watch": "./node_modules/nodemon/bin/nodemon.js",
+    "build": "tsc -p app/tsconfig.dev.json",
+    "dev": "./node_modules/nodemon/bin/nodemon.js",
     "watch-http": "ts-node --project app/tsconfig.dev.json app/src/http/server.ts",
     "watch-ws": "ts-node --project app/tsconfig.dev.json app/src/ws/server.ts"
   },
