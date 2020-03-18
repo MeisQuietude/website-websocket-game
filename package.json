@@ -11,6 +11,16 @@
   },
   "author": "Stepan Savelyev",
   "license": "ISC",
+  "nodemonConfig": {
+    "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "node_modules"],
+    "watch": ["app/src/http", "app/src/ws", "app/src/lib"],
+    "exec": "npm start",
+    "events": {
+      "restart": "fuser -k 3000/tcp; fuser -k 3030/tcp"
+    },
+    "delay": 1500,
+    "ext": "ts"
+  },
   "dependencies": {
     "ejs": "^3.0.1",
     "express": "^4.17.1",
