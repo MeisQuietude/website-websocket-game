@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.min.css">
+    <title>Game</title>
+</head>
+
+<body>
+
+    <main>
+        <div>
+            <div id="game-field" class="game-field size-<%= fieldLength %>">
+                <% for( let i = 0; i < fieldLength; i++ ) { %>
+                    <% for( let j = 0; j < fieldLength; j++ ) { %>
+                        <span><%= j %></span>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (() => {
+            /* Make cells are square */
+            document.querySelector("#game-field").querySelectorAll(".col").forEach(node => {
+                if (node && node.classList.contains("col")) {
+                    node.style.height = `${node.offsetWidth}px`;
+                }
+            })
+        });
+    </script>
+
+</body>
+
+</html>
