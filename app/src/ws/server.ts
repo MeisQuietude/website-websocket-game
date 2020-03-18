@@ -1,32 +1,20 @@
-import { Socket } from "net";
+import { IncomingMessage } from "http";
+import WebSocket from "ws";
+import * as SocketRegister from "../lib/socket-register";
 
-import * as http from "http";
-import url from "url";
 
-import { game, chat } from "./sockets";
+const wss: WebSocket.Server = new WebSocket.Server({ port: 3030 });
 
-const server: http.Server = http.createServer();
+wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
+  SocketRegister.set(ws, req.headers['sec-websocket-key'].toString());
 
-server.on("upgrade", (request: http.IncomingMessage, socket: Socket, upgradeHead: Buffer) => {
-  const pathname = url.parse(request.url).pathname;
+  console.log(`User connected ${SocketRegister.get(ws)}`);
 
-  switch (pathname) {
-    case "/game":
-      game.handleUpgrade(request, socket, upgradeHead, (ws) => {
-        game.emit("connection", ws, request);
-      });
-      break;
-    case "/chat":
-      chat.handleUpgrade(request, socket, upgradeHead, (ws) => {
-        chat.emit("connection", ws, request);
-      });
-      break;
-    default:
-      socket.destroy();
-      break;
-  }
+  ws.on("message", msg => {
+    console.log(`Message ${msg} from user ${SocketRegister.get(ws)}`);
+  })
+  console.log([...wss.clients.values()].map(client => SocketRegister.get(client)));
+
 })
 
-server.listen(3030, () => {
-  console.log("WebSocket Server listen on port 3030!")
-});
+console.log("WebSocket Server listen on port 3030!");
