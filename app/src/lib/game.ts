@@ -25,16 +25,16 @@ class Field {
         this._buildField();
     }
 
-    private _buildField = () => {
+    private _buildField = (): void => {
         /**
          * create (fieldSize x fieldSize) array
          * filled by zeros
          */
-        let field = [];
+        const field = [];
         field.length = this.fieldSize;
         field.fill([]);
 
-        let zerosArray = [];
+        const zerosArray = [];
         for (let i = 0; i < this.fieldSize; i++) {
             zerosArray.length = this.fieldSize;
             zerosArray.fill(0);

@@ -1,9 +1,9 @@
 import serverHTTP from "./http/server";
 import serverIO from "./socket/server";
 
-const express = serverHTTP.listen(3000, async () => {
+const express = serverHTTP.listen(3000, () => {
     console.log('Server listening on port 3000!')
-    await serverIO.attach(express, {
+    serverIO.attach(express, {
         pingInterval: 10000,
         pingTimeout: 5000,
     })

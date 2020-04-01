@@ -7,7 +7,7 @@
     "build": "tsc -p app/tsconfig.dev.json",
     "dev": "./node_modules/nodemon/bin/nodemon.js",
     "watch": "ts-node --project app/tsconfig.dev.json app/src/index.ts",
-    "lint": "tslint -c ./tslint.json ./app"
+    "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx app/src"
   },
   "author": "Stepan Savelyev",
   "license": "ISC",
@@ -41,9 +41,11 @@
     "@types/mongodb": "^3.5.2",
     "@types/morgan": "^1.9.0",
     "@types/socket.io": "^2.1.4",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "concurrently": "^5.1.0",
+    "eslint": "^6.8.0",
     "nodemon": "^2.0.2",
-    "ts-node": "^8.6.2",
-    "tslint": "^6.1.0"
+    "ts-node": "^8.6.2"
   }
 }
