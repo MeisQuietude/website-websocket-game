@@ -37,7 +37,7 @@
       grid-template-columns: repeat(6, 15%);
 }
 
-.size-3 {
+.size-7 {
   -ms-grid-rows: (30%)[3];
       grid-template-rows: repeat(3, 30%);
   -ms-grid-columns: (30%)[3];
