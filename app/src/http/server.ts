@@ -16,6 +16,4 @@ app.set("views", path.join(__dirname, "../../resource/views"))
 
 app.use(router);
 
-app.listen(3000, () => {
-  console.log('Server listening on port 3000!')
-});
+export default app;

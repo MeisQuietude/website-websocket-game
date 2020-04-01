@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/index.min.css">
     <title>EJS Template</title>
 </head>
 <body>
     Hello World!
+    <form name="formCreateGame">
+        <div>
+            <label for="fieldSize">Size</label>
+            <input type="number" name="fieldSize" id="fieldSize" min="3" max="12" value="3">
+            <!-- <input type="range" name="fieldSize" min="3" max="12" value="3"> -->
+        </div>
+        <button type="submit">Create Game</button>
+    </form>
+    <form name="formJoinGame">
+        <button type="submit">Join Game</button>
+    </form>
+
+    <script src="/static/js/socket.io/socket.io.js"></script>
+    <script src="/static/js/index.js"></script>
 </body>
 </html>
