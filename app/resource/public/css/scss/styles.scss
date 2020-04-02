@@ -1,0 +1,34 @@
+$background-color-primary: #3949ab;
+$background-color-primary-dark: #00227b;
+$background-color-primary-light: #6f74dd;
+$background-color-secondary: #eeeeee;
+$background-color-secondary-dark: #bcbcbc;
+$background-color-secondary-light: #ffffff;
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Thambi+2&display=swap');
+$font-family-base: 'Baloo Thambi 2', cursive;
+
+.bg-primary {
+    background-color: $background-color-primary !important;
+}
+
+body {
+    height: 100vh;
+    background-color: $background-color-secondary;
+}
+
+.navbar {
+    margin-bottom: 30px;
+}
+
+.navbar-dark {
+    background-color: $background-color-primary-dark;
+}
+
+.game-card {
+    padding-bottom: 0.5rem;
+}
+
+.btn-primary-light {
+    background-color: $background-color-primary-light;
+}

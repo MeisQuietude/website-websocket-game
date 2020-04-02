@@ -1,0 +1,53 @@
+{% extends "layout/layout.html" %}
+
+{% block body %}
+
+<main class="container h-75">
+    <div class="row h-100">
+
+        <!-- Game Cards -->
+        <div class="col-12 col-sm-9 h-100">
+            <div class="row h-100">
+                <div class="d-none d-sm-block col-sm-1 border align-self-center">&#171;</div>
+                <div class="col-12 col-sm-10 border">
+                    <div class="row">
+                        {% for game in games %}
+                            <div class="col-4">
+                                {% set name = game.hostname %}
+                                {% set id = game.id %}
+                                {% include "partials/game-card.html" %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="d-none d-sm-block col-sm-1 border align-self-center">&#187;</div>
+            </div>    
+        </div>
+
+        <!-- Filter and Chat Tabs -->
+        <div class="col-12 col-sm-3 h-100 border">
+            <div class="row row-content">
+                <div class="col-12">
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a href="#filter" class="nav-link active" role="tab" data-toggle="tab">Фильтр</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#chat" class="nav-link" role="tab" data-toggle="tab">Чат</a>
+                        </li>
+                    </ul>
+                        
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade show active" id="filter">
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="chat">
+                            
+                        </div>
+                    </div>    
+        </div>
+    </div>
+</main>
+
+{% endblock %}

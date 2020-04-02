@@ -7,7 +7,16 @@ const router = Router();
 router.use("/static", express.static(path.join(__dirname, "../../resource/public")))
 
 router.get('/', (req: Request, res: Response) => {
-   res.render("index", {});
+   res.render("index", { games: [
+      {
+         "hostname": "Alex",
+         "id": "12"
+      },
+      {
+         "hostname": "Andrey",
+         "id": "13"
+      }
+   ] });
 });
 
 router.get('/game', (req: Request, res: Response) => {

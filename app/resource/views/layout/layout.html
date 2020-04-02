@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="static/third-party/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="static/css/styles.min.css">
+
+    <title>{{ title }}</title>
+</head>
+<body>
+
+    {% include "partials/navbar.html" %}
+
+    {% block body %}{% endblock %}
+
+    <!-- Bootstrap -->
+    <script src="static/third-party/jquery/dist/jquery.slim.min.js"></script>
+    <script src="static/third-party/popper.js/core/dist/umd/popper.min.js"></script>
+    <script src="static/third-party/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Socket.io -->
+    <script src="static/third-party/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+    </script>
+
+    {% block scripts %}{% endblock %}
+    
+</body>
+</html>
