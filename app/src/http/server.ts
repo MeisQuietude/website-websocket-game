@@ -4,7 +4,10 @@ import express from "express";
 import morgan from "morgan";
 import nunjucks from "nunjucks";
 
-import router from "./routes";
+import routesMiddleware from "./routes/middlewares";
+import routesIndex from "./routes/index";
+import routesGame from "./routes/game";
+import routesBad from "./routes/bad";
 
 const app = express();
 
@@ -21,6 +24,9 @@ nunjucks.configure(path.join(__dirname, "../../resource/views"), {
     noCache: true
 })
 
-app.use(router);
+app.use(routesMiddleware);
+app.use("/", routesIndex);
+app.use("/game", routesGame);
+app.use(routesBad);
 
 export default app;

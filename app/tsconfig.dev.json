@@ -15,6 +15,6 @@
         "src/**/*"
     ],
     "exclude": [
-        "build", "src/http", "src/ws"
+        "build"
     ]
 }
