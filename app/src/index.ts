@@ -1,11 +1,11 @@
-import serverHTTP from "./http/server";
-import serverIO from "./socket/server";
+import expressApplication from "./http/app";
+import io from "socket.io";
 
-const express = serverHTTP.listen(3000, "0.0.0.0", () => {
+const serverHTTP = expressApplication.listen(3000, "0.0.0.0", () => {
     console.log("Server listening on port 3000!");
-    serverIO.attach(express, {
-        pingInterval: 10000,
-        pingTimeout: 5000,
-    });
-    console.log("Socket.io attached to HTTP Server");
+});
+
+const serverIO = io(serverHTTP, {
+    pingInterval: 10000,
+    pingTimeout: 5000,
 });
