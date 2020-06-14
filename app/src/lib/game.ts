@@ -1,6 +1,4 @@
-class Player {
-    
-}
+class Player {}
 
 class Field {
     private minFieldSize = 3;
@@ -20,7 +18,9 @@ class Field {
         if (winCombination <= fieldSize) {
             this.winCombination = winCombination;
         } else {
-            throw new Error("Win combination number must be less or equal to field size")
+            throw new Error(
+                "Win combination number must be less or equal to field size"
+            );
         }
         this._buildField();
     }
@@ -41,9 +41,10 @@ class Field {
             field[i] = zerosArray;
         }
         this.field = field;
-    }
+    };
 }
 
+// eslint-disable-next-line no-unused-vars
 class Game {
     player1: Player;
     player2: Player;

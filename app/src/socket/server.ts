@@ -6,6 +6,6 @@ const serverIO = io({
 
 serverIO.on("connection", (socket: io.Socket) => {
     console.log(`Connection ${socket.id}`);
-})
+});
 
 export default serverIO;

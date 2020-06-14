@@ -21,8 +21,8 @@ nunjucks.configure(path.join(__dirname, "../../resource/views"), {
     autoescape: true,
     express: app,
     watch: true,
-    noCache: true
-})
+    noCache: true,
+});
 
 app.use(routesMiddleware);
 app.use("/", routesIndex);
