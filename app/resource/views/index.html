@@ -12,42 +12,53 @@
                 <div class="col-12 col-sm-10 border">
                     <div class="row">
                         {% for game in games %}
-                            <div class="col-4">
-                                {% set name = game.hostname %}
-                                {% set id = game.id %}
-                                {% include "partials/game-card.html" %}
-                            </div>
+                        <div class="col-4">
+                            {% set name = game.hostname %}
+                            {% set id = game.id %}
+                            {% include "partials/game-card.html" %}
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
                 <div class="d-none d-sm-block col-sm-1 border align-self-center">&#187;</div>
-            </div>    
+            </div>
         </div>
 
         <!-- Filter and Chat Tabs -->
         <div class="col-12 col-sm-3 h-100 border">
-            <div class="row row-content">
-                <div class="col-12">
-                    <!-- Tabs -->
-                    <ul class="nav nav-tabs">
+            <div class="card text-center h-100">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a href="#filter" class="nav-link active" role="tab" data-toggle="tab">Фильтр</a>
+                            <a class="nav-link active" href="#chat">Чат</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#chat" class="nav-link" role="tab" data-toggle="tab">Чат</a>
+                            <a class="nav-link" href="#filter">Фильтр</a>
                         </li>
                     </ul>
-                        
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane fade show active" id="filter">
+                </div>
+                <div class="card-body h-100">
+                    <div class="tab-content h-100">
+                        <div role="tabpanel" class="tab-pane fade show active h-100" id="chat">
+                            <div id="chat-messages"></div>
+                            <div class="row align-bottom">
+                                    <input class="col-8" type="text" id="chat-input">
+                                    <input type="button" class="btn btn-info col-4" value="Send" id="chat-send-btn">
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="filter">
 
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="chat">
-                            
-                        </div>
-                    </div>    
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/index.js"></script>
 {% endblock %}

@@ -9,3 +9,13 @@ const serverIO = io(serverHTTP, {
     pingInterval: 10000,
     pingTimeout: 5000,
 });
+
+serverIO.on("connection", socket => {
+    socket.on("disconnect", args => null);
+
+    socket.on("chat", message => {
+        serverIO.emit("chat", message);
+    });
+
+    socket.on("game", args => null);
+});
