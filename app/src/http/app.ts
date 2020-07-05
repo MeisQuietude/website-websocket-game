@@ -5,7 +5,10 @@ import session from "express-session";
 import morgan from "morgan";
 import nunjucks from "nunjucks";
 
-import routesMiddleware from "./routes/middlewares";
+import auth from "./middlewares/auth";
+import serveStaticFiles from "./middlewares/serveStaticFiles";
+import defauRenderVariables from "./middlewares/defaultRenderVariables";
+
 import routesIndex from "./routes/index";
 import routesGame from "./routes/game";
 import routesBad from "./routes/bad";
@@ -26,7 +29,6 @@ app.use(morgan("dev"));
 
 // Template Engine
 app.set("view engine", "html");
-// app.set("views", path.join(__dirname, "../../resource/views"))
 nunjucks.configure(path.join(__dirname, "../../resource/views"), {
     autoescape: true,
     express: app,
@@ -34,7 +36,10 @@ nunjucks.configure(path.join(__dirname, "../../resource/views"), {
     noCache: true,
 });
 
-app.use(routesMiddleware);
+app.use(auth);
+app.use(serveStaticFiles);
+app.use(defauRenderVariables);
+
 app.use("/", routesIndex);
 app.use("/game", routesGame);
 app.use(routesBad);

@@ -1,9 +1,7 @@
 import { Router, Request, Response } from "express";
 import { isValidObjectId } from "mongoose";
+import { Game } from "../../data";
 
-import Models from "../../data";
-
-const { Game } = Models;
 const router = Router();
 
 router.get("/:id", async (req: Request, res: Response) => {
