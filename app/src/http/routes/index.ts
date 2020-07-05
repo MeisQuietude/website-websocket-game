@@ -1,19 +1,14 @@
 import { Router, Request, Response } from "express";
 
+import Models from "../../data";
+
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
+    const games = await Models.Game.find({ finished: false }).limit(10).lean().exec();
     res.render("index", {
-        games: [
-            {
-                hostname: "Alex",
-                id: "12",
-            },
-            {
-                hostname: "Andrey",
-                id: "13",
-            },
-        ],
+        ...req.session.defaultRenderVariables,
+        games,
     });
 });
 

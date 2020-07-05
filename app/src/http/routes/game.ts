@@ -1,18 +1,30 @@
 import { Router, Request, Response } from "express";
+import { isValidObjectId } from "mongoose";
 
+import Models from "../../data";
+
+const { Game } = Models;
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
-    // const games = getGames();
-    // return res.json(games);
+router.get("/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    // TODO: check for game state (waiting -> join as opponent, playing -> spectate)
+    if (isValidObjectId(id)) {
+        const game = await Game.findById(id).exec();
+        if (game) {
+            return res.render("game", {
+                ...req.session.defaultRenderVariables,
+                id: id,
+                name: game.get("name"),
+                fieldSize: game.get("fieldSize"),
+                gameStatus: game.get("gameStatus"),
+            });
+        }
+    }
+
+    return res.redirect("/");
 });
 
-router.get("/:id", (req: Request, res: Response) => {
-    console.log(req.params.id);
-});
-
-router.post("/", (req: Request, res: Response) => {
-    console.log("POST");
-});
 
 export default router;
