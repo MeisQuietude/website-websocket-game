@@ -1,17 +1,12 @@
-import { MongoClient } from "mongodb";
-import * as assert from "assert";
+import dotenv from "dotenv";
 
-const url = "";
-const dbName = "";
+import { GameModel } from "./models/game";
+import { FieldModel } from "./models/field";
 
-const client = new MongoClient(url);
+dotenv.config();
 
-client.connect((error) => {
-    assert.equal(null, error);
-    console.log("Connected successfully to server!");
+const { DBNAME, DBUSER, DBPASS } = process.env;
+export const DBURI = `mongodb+srv://${DBUSER}:${DBPASS}@course-2-vpxyl.azure.mongodb.net/${DBNAME}?retryWrites=true&w=majority`;
 
-    const db = client.db(dbName);
-    console.log(db);
-
-    client.close();
-});
+export const Game = GameModel;
+export const Field = FieldModel;
