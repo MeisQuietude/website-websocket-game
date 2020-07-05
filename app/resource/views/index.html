@@ -10,13 +10,11 @@
             <div class="row h-100">
                 <div class="d-none d-sm-block col-sm-1 border align-self-center">&#171;</div>
                 <div class="col-12 col-sm-10 border">
-                    <div class="row">
+                    <div id="gamesContainer" class="row">
                         {% for game in games %}
-                        <div class="col-4">
-                            {% set name = game.hostname %}
-                            {% set id = game.id %}
+                            {% set name = game.name %}
+                            {% set id = game._id %}
                             {% include "partials/game-card.html" %}
-                        </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -42,23 +40,28 @@
                         <div role="tabpanel" class="tab-pane fade show active h-100" id="chat">
                             <div id="chat-messages"></div>
                             <div class="row align-bottom">
-                                    <input class="col-8" type="text" id="chat-input">
-                                    <input type="button" class="btn btn-info col-4" value="Send" id="chat-send-btn">
-                                </div>
+                                <input class="col-8" type="text" id="chat-input">
+                                <input type="button" class="btn btn-info col-4" value="Send" id="chat-send-btn">
                             </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="filter">
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="filter">
 
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="col-12 justify-content-center">
+            <button id="" class="btn btn-primary" data-toggle="modal" data-target="#createGameFormModal">Create game</button>
+        </div>
     </div>
 </main>
+
+{% include "partials/createGameFormModal.html" %}
 
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/index.js"></script>
+<script src="{{ domen }}/static/js/index.js"></script>
 {% endblock %}

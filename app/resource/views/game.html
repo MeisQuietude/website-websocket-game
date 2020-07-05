@@ -1,39 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layout/layout.html" %}
+{% block body %}
+<main class="container">
+    <div id="game-field" class="game-field size-{{ fieldLength }} row justify-content-center">
+        {% for i in range(0, fieldSize) %}
+            {% for j in range(0, fieldSize) %}
+                    {% include "partials/gameSell.html" %}
+            {% endfor %}
+        {% endfor %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/style.min.css">
-    <title>Game</title>
-</head>
+    </div>
+</main>
+{% endblock %}
 
-<body>
-
-    <main>
-        <div>
-            <div id="game-field" class="game-field size-<%= fieldLength %>">
-                <% for( let i = 0; i < fieldLength; i++ ) { %>
-                    <% for( let j = 0; j < fieldLength; j++ ) { %>
-                        <span><%= j %></span>
-                    <% } %>
-                <% } %>
-            </div>
-        </div>
-    </main>
-
-    <script src="/static/socket.io.js"></script>
-    <script>
-        (() => {
-            /* Make cells are square */
-            document.querySelector("#game-field").querySelectorAll(".col").forEach(node => {
-                if (node && node.classList.contains("col")) {
-                    node.style.height = `${node.offsetWidth}px`;
-                }
-            })
-        });
-    </script>
-
-</body>
-
-</html>
+{% block scripts %}
+<script src="{{ domen }}/static/js/game.js"></script>
+{% endblock %}
