@@ -1,7 +1,9 @@
 const chatContainer = document.getElementById("chat-messages");
 const chatInput = document.getElementById("chat-input");
+const chatSendBtn = document.getElementById("chat-send-btn");
+const createGameForm = document.getElementById("createGameForm");
 
-const chatAppendMessage = message => {
+const chatAppendMessage = (message) => {
     const p = document.createElement("p");
     p.innerText = message;
     chatContainer && chatContainer.appendChild(p);
@@ -14,13 +16,12 @@ window.onload = () => {
 // Socket.IO
 const socket = io();
 
-socket.on("chat", message => {
+socket.on("chat", (message) => {
     chatAppendMessage(message);
 });
 
 // DOM
-const btnChat = document.getElementById("chat-send-btn");
-btnChat.addEventListener("click", () => {
+chatSendBtn.addEventListener("click", () => {
     const text = chatInput && chatInput.value;
 
     if (text) {
@@ -28,4 +29,12 @@ btnChat.addEventListener("click", () => {
     }
 
     chatInput.value = "";
+});
+
+createGameForm.addEventListener("submit", async () => {
+    await socket.emit("game-create", {
+        name: createGameForm.querySelector("#name").value || "GameRoom",
+        fieldSize: 3,
+        winCombination: 3,
+    });
 });
