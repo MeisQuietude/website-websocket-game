@@ -1,7 +1,8 @@
 import Field from "./field";
-import { Socket } from "socket.io";
+import { Namespace, Socket } from "socket.io";
 import { Game as GameModel } from "../data";
-import { Document } from "mongoose";
+import { InstanceType } from "typegoose";
+import { GameSchema } from "../data/models/game";
 
 class Client {
     public socket: Socket;
@@ -16,7 +17,7 @@ class Client {
 
 class Game {
     private static Model = GameModel;
-    private ModelRecord: Document;
+    private ModelRecord: InstanceType<GameSchema>;
 
     private name: string;
     private fieldSize: number;
@@ -32,46 +33,65 @@ class Game {
         this.name = name;
         this.fieldSize = fieldSize;
         this.winCombination = winCombination;
+
+        this.field = new Field(this.fieldSize, this.winCombination); // TODO: should I create an empty field here?
     }
 
-    public static init = async (id: string): Promise<Game> => {
-        const record = await Game.Model.findById(id).exec();
+    public static init = async (id: string, roomClients: Namespace): Promise<Game> => {
+        const gameRecord = await Game.Model.findById(id).exec();
 
-        const game = new Game(record.get("name"), record.get("fieldSize"), record.get("winCombination"));
-        game.field = (new Field(game.fieldSize, game.winCombination)).init(record.get("field"));
-        game.player1 = record.get("player1");
-        game.player2 = record.get("player2");
-        game.spectators = record.get("spectators");
+        const { name, fieldSize, winCombination, cellTable, player1, player2, spectators } = gameRecord;
 
-        game.ModelRecord = record;
+        const gameInstance = new Game(name, fieldSize, winCombination);
+        gameInstance.field = new Field(fieldSize, winCombination, cellTable);
 
-        return game;
+        if (player1) {
+            gameInstance.player1 = new Client(roomClients.sockets[player1]);
+        }
+        if (player2) {
+            gameInstance.player2 = new Client(roomClients.sockets[player2]);
+        }
+        if (spectators && spectators.length > 0) {
+            gameInstance.spectators = spectators.map(spectator => new Client(roomClients.sockets[spectator]));
+        }
+
+        gameInstance.ModelRecord = gameRecord;
+
+        return gameInstance;
     }
 
     public save = async (): Promise<void> => {
-        this.field = new Field(this.fieldSize, this.winCombination);
-        const fieldId = (await this.field.save()).id;
+        const { name, fieldSize, winCombination, field } = this;
 
-        this.ModelRecord = new Game.Model({
-            name: this.name,
-            field: fieldId,
-            fieldSize: this.fieldSize,
-            winCombination: this.winCombination,
-        });
+        if (!this.ModelRecord) {
+            this.ModelRecord = await Game.Model.create({
+                name,
+                fieldSize,
+                winCombination,
+                cellTable: field.cellTable,
+            });
+        } else {
+            await this.ModelRecord.updateOne({
+                cellTable: field.cellTable,
+            }).exec();
+        }
 
         await this.ModelRecord.save();
     }
 
-    public actionTurn = (client: Socket, cellIndex: number): void => {
+    public actionTurn = async (client: Socket, cellIndex: number): Promise<boolean> => {
         const player = this._onlyPlayerAccess(client);
-        if (!player) return;
+        if (!player) return false;
 
         const row = Math.floor(cellIndex / this.fieldSize);
         const col = cellIndex % this.fieldSize;
 
         if (this.field.getCellValue(row, col) == 0) {
             this.field.setCellValue(row, col, player.value);
+            await this.save();
+            return true;
         }
+        return false;
     }
 
     public addClient = async (client: Socket): Promise<void> => {

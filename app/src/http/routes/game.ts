@@ -11,12 +11,13 @@ router.get("/:id", async (req: Request, res: Response) => {
     if (isValidObjectId(id)) {
         const game = await Game.findById(id).exec();
         if (game) {
+            const { name, fieldSize, gameStatus } = game;
             return res.render("game", {
                 ...req.session.defaultRenderVariables,
                 id: id,
-                name: game.get("name"),
-                fieldSize: game.get("fieldSize"),
-                gameStatus: game.get("gameStatus"),
+                name,
+                fieldSize,
+                gameStatus,
             });
         }
     }
