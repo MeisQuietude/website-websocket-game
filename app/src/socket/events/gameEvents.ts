@@ -15,21 +15,18 @@ class Events extends EventConstructor {
     public create = async (args: Arguments): Promise<void> => {
         const { name, fieldSize, winCombination } = args;
 
-        this.game = new Game(name, fieldSize, winCombination);
-        await this.game.save();
+        const gameInstance = new Game(name, fieldSize, winCombination);
+        await gameInstance.save();
     }
 
-    public init = async (gameId: string): Promise<void> => {
-        if (!this.game) {
-            this.game = await Game.init(gameId);
-        }
-    }
 
     public join = async (id: string): Promise<void> => {
-        await this.init(id);
-
         this.socket.join(id);
         this.roomId = id;
+
+        if (!this.game) {
+            this.game = await Game.init(id, this.serverIO.clients());
+        }
 
         await this.game.addClient(this.socket);
     }
@@ -38,8 +35,11 @@ class Events extends EventConstructor {
         this.serverIO.to(this.roomId).emit("message", { message });
     };
 
-    public turn = (cellIndex: number): void => {
-        this.game.actionTurn(this.socket, cellIndex);
+    public turn = async (cellIndex: number): Promise<void> => {
+        const isOk = await this.game.actionTurn(this.socket, cellIndex);
+        if (isOk) {
+            this.serverIO.to(this.roomId).emit("game-turn", cellIndex);
+        }
     };
 
     public leave = async (socketId: string): Promise<void> => {

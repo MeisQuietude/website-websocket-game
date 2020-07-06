@@ -1,19 +1,13 @@
-import { Field as FieldModel } from "../data";
-import { Document, isValidObjectId } from "mongoose";
-
 class Field {
-    private Model = FieldModel;
-    private ModelRecord: Document;
-
     private minFieldSize = 3;
     private maxFieldSize = 12;
 
     public fieldSize: number;
     public winCombination: number;
 
-    public field: Array<Array<number>>;
+    public cellTable: number[][];
 
-    constructor(fieldSize: number, winCombination: number) {
+    constructor(fieldSize: number, winCombination: number, cellTable?: number[][]) {
         if (fieldSize >= this.minFieldSize && fieldSize <= this.maxFieldSize) {
             this.fieldSize = fieldSize;
         } else {
@@ -26,50 +20,29 @@ class Field {
                 "Win combination number must be less or equal to field size"
             );
         }
-    }
 
-    public save = async (): Promise<Document> => {
-        const zeroArray = [];
-
-        for (let i = 0; i < this.fieldSize; i++) {
-            const nestedArray = [];
-            for (let j = 0; j < this.fieldSize; j++) {
-                nestedArray.push(0);
+        if (cellTable) {
+            this.cellTable = cellTable;
+        } else {
+            const zeroArray: number[][] = [];
+            for (let i = 0; i < this.fieldSize; i++) {
+                const nestedArray: number[] = [];
+                for (let j = 0; j < this.fieldSize; j++) {
+                    nestedArray.push(0);
+                }
+                zeroArray.push(nestedArray);
             }
-            zeroArray.push(nestedArray);
+
+            this.cellTable = zeroArray;
         }
-
-        this.ModelRecord = new this.Model({
-            fieldSize: this.fieldSize,
-            winCombination: this.winCombination,
-            turns: zeroArray,
-        });
-
-        return await this.ModelRecord.save();
-    }
-
-    public init = (modelRecordId: string): Field => {
-        if (!isValidObjectId(modelRecordId)) {
-            return;
-        }
-        // this.ModelRecord = this.Model.findById(modelRecordId);
-
-        console.log(this.ModelRecord);
-
-        this.fieldSize = this.ModelRecord.get("fieldSize");
-        this.winCombination = this.ModelRecord.get("winCombination");
-        this.field = this.ModelRecord.get("turns");
-
-        return this;
     }
 
     public getCellValue = (row: number, column: number): number => {
-        return this.field[row][column];
+        return this.cellTable[row][column];
     }
 
     public setCellValue = (row: number, column: number, value: number): void => {
-        // Value is [0, 1, 2]
-        this.field[row][column] = value;
+        this.cellTable[row][column] = value;
     }
 
     private _build = (): Array<Array<number>> => {
@@ -87,7 +60,7 @@ class Field {
             zerosArray.fill(0);
             field[i] = zerosArray;
         }
-        this.field = field;
+        this.cellTable = field;
 
         return field;
     };
