@@ -1,4 +1,19 @@
 window.onload = async () => {
+    const CELL_STATUS = Object.freeze({
+        EMPTY: {
+            backValue: 0,
+            frontValue: "",
+        },
+        PLAYER1: {
+            backValue: 1,
+            frontValue: "X",
+        },
+        PLAYER2: {
+            backValue: 2,
+            frontValue: "O",
+        },
+    });
+
     // Socket.IO
     const socket = io();
     await socket.emit("game-join", vars.id);
@@ -10,16 +25,19 @@ window.onload = async () => {
 
     socket.on("game-join-front", (cellTableFlatted) => {
         document.querySelectorAll(".game-cell-input").forEach((node, i) => {
-            if (cellTableFlatted[i] === 0) {
+            if (cellTableFlatted[i] === CELL_STATUS.EMPTY.backValue) {
                 node.disabled = false;
+                node.value = CELL_STATUS.EMPTY.frontValue;
                 return null;
             }
-            if (cellTableFlatted[i] === 1) {
+            if (cellTableFlatted[i] === CELL_STATUS.PLAYER1.backValue) {
                 node.disabled = true;
+                node.value = CELL_STATUS.PLAYER1.frontValue;
                 return null;
             }
-            if (cellTableFlatted[i] === 2) {
+            if (cellTableFlatted[i] === CELL_STATUS.PLAYER2.backValue) {
                 node.disabled = true;
+                node.value = CELL_STATUS.PLAYER2.frontValue;
                 return null;
             }
         });
@@ -38,9 +56,16 @@ window.onload = async () => {
         console.log(message);
     });
 
-    socket.on("game-turn", (cellIndex) => {
+    socket.on("game-turn", ({ cellStatus, cellIndex }) => {
         const node = document.querySelectorAll(".game-cell-input").item(cellIndex);
+
         node.disabled = true;
+        if (cellStatus === CELL_STATUS.PLAYER1.backValue) {
+            node.value = CELL_STATUS.PLAYER1.frontValue;
+        }
+        if (cellStatus === CELL_STATUS.PLAYER2.backValue) {
+            node.value = CELL_STATUS.PLAYER2.frontValue;
+        }
     });
 
     // DOM

@@ -84,9 +84,9 @@ class Game {
         this.field.cellTable = this.ModelRecord.cellTable;
     }
 
-    public actionTurn = async (client: Socket, cellIndex: number): Promise<boolean> => {
+    public actionTurn = async (client: Socket, cellIndex: number): Promise<number> => {
         const player = this._onlyPlayerAccess(client);
-        if (!player) return false;
+        if (!player) return null;
 
         await this.update();
 
@@ -96,9 +96,9 @@ class Game {
         if (this.field.getCellValue(row, col) == 0) {
             this.field.setCellValue(row, col, player.value);
             await this.save();
-            return true;
+            return player.value;
         }
-        return false;
+        return null;
     }
 
     public addClient = async (client: Socket): Promise<void> => {

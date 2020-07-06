@@ -37,9 +37,9 @@ class Events extends EventConstructor {
     };
 
     public turn = async (cellIndex: number): Promise<void> => {
-        const isOk = await this.game.actionTurn(this.socket, cellIndex);
-        if (isOk) {
-            this.serverIO.to(this.roomId).emit("game-turn", cellIndex);
+        const cellStatus = await this.game.actionTurn(this.socket, cellIndex);
+        if (cellStatus) {
+            this.serverIO.to(this.roomId).emit("game-turn", { cellIndex, cellStatus });
         }
     };
 
