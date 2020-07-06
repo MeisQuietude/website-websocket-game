@@ -90,8 +90,7 @@ class Game {
 
         await this.update();
 
-        const row = Math.floor(cellIndex / this.fieldSize);
-        const col = cellIndex % this.fieldSize;
+        const { row, col } = this.translateFlatToIndex(cellIndex);
 
         if (this.field.getCellValue(row, col) == 0) {
             this.field.setCellValue(row, col, player.value);
@@ -100,6 +99,14 @@ class Game {
         }
         return null;
     }
+
+    public isWin = (flatIndex: number): number => {
+        const { row, col } = this.translateFlatToIndex(flatIndex);
+        const isWin_ = this.field.isWin(row, col);
+        if (isWin_ && isWin_.player) {
+            return isWin_.player;
+        }
+    };
 
     public addClient = async (client: Socket): Promise<void> => {
         if (!this.player1) {
@@ -164,6 +171,17 @@ class Game {
             return this.player2;
         }
         return null;
+    }
+
+    private translateFlatToIndex = (flatIndex: number) => {
+        return {
+            row: Math.floor(flatIndex / this.fieldSize),
+            col: flatIndex % this.fieldSize,
+        };
+    }
+
+    private translateIndexToFlat = (row: number, col: number): number => {
+        return this.fieldSize * row + col;
     }
 }
 

@@ -52,6 +52,12 @@ window.onload = async () => {
         window.location.href = "/";
     });
 
+    socket.on("game-finish-win-front", (playerValue) => {
+        const message = `Player ${playerValue} win!`;
+        alert(message);
+        window.location.href = "/";
+    });
+
     socket.on("message", (message) => {
         console.log(message);
     });

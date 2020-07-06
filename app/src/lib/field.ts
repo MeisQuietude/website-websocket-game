@@ -1,3 +1,7 @@
+interface WinReturn {
+    player: number;
+}
+
 class Field {
     private minFieldSize = 3;
     private maxFieldSize = 12;
@@ -45,28 +49,103 @@ class Field {
         this.cellTable[row][column] = value;
     }
 
-    private _build = (): Array<Array<number>> => {
-        /**
-         * create (fieldSize x fieldSize) array
-         * filled by zeros
-         */
-        const field: Array<Array<number>> = [];
-        field.length = this.fieldSize;
-        field.fill([]);
+    public isWin = (row: number, col: number): WinReturn => {
+        const playerValue = this.cellTable[row][col];
 
-        const zerosArray: Array<number> = [];
-        for (let i = 0; i < this.fieldSize; i++) {
-            zerosArray.length = this.fieldSize;
-            zerosArray.fill(0);
-            field[i] = zerosArray;
+        // Horizontal
+        const horizontalLine = this.cellTable[row];
+        const horizontalSubsets = this.winSubsetSplit(horizontalLine);
+        const horizontalWin = this.checkWinSubsets(horizontalSubsets);
+
+        if (horizontalWin) {
+            return {
+                player: playerValue,
+            };
         }
-        this.cellTable = field;
 
-        return field;
-    };
+        // Vertical
+        const verticalLine = this.cellTable.map(line => line[col]);
+        const verticalSubsets = this.winSubsetSplit(verticalLine);
+        const verticalWin = this.checkWinSubsets(verticalSubsets);
 
-    rebuild(): Array<Array<number>> {
-        return this._build();
+        if (verticalWin) {
+            return {
+                player: playerValue,
+            };
+        }
+
+        // Main Diagonal
+        const mainDiagonalLine = this.getMainDiagonalLine(row, col);
+        const mainDiagonalSubsets = this.winSubsetSplit(mainDiagonalLine);
+        const mainDiagonalWin = this.checkWinSubsets(mainDiagonalSubsets);
+
+        if (mainDiagonalWin) {
+            return {
+                player: playerValue,
+            };
+        }
+
+        // Additional Diagonal
+        const additionalDiagonalLine = this.getAdditionalDiagonalLine(row, col);
+        const additionalDiagonalSubsets = this.winSubsetSplit(additionalDiagonalLine);
+        const additionalDiagonalWin = this.checkWinSubsets(additionalDiagonalSubsets);
+
+        if (additionalDiagonalWin) {
+            return {
+                player: playerValue,
+            };
+        }
+    }
+
+    private checkWinSubsets = (subsets: number[][]): boolean => {
+        for (let i = 0, subset_ = subsets[i]; i < subsets.length; i++, subset_ = subsets[i]) {
+            const set_ = new Set(subset_);
+
+            if (set_.size === 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private winSubsetSplit = (line: number[]): number[][] => {
+        if (line.length == this.winCombination) {
+            return [line];
+        }
+
+        const subsetList: number[][] = [];
+        for (let i = 0; i < this.fieldSize - this.winCombination; i++) {
+            subsetList.push(line.slice(i, i + this.winCombination));
+        }
+        return subsetList;
+    }
+
+    private getMainDiagonalLine = (row: number, col: number): number[] => {
+        const difference = Math.min(row, col);
+
+        const startCellRow = row - difference;
+        const startCellCol = col - difference;
+
+        const resultLine = [];
+
+        for (let i = startCellRow, j = startCellCol; i < this.fieldSize && j < this.fieldSize; i++, j++) {
+            resultLine.push(this.cellTable[i][j]);
+        }
+
+        return resultLine;
+    }
+
+    private getAdditionalDiagonalLine = (row: number, col: number): number[] => {
+        const startCellRow = row % this.fieldSize;
+        const startCellCol = row + col;
+
+        const resultLine = [];
+
+        for (let i = startCellRow, j = startCellCol; i < this.fieldSize && j >= 0; i++, j--) {
+            resultLine.push(this.cellTable[i][j]);
+        }
+
+        return resultLine;
     }
 }
 
