@@ -1,4 +1,4 @@
-class User {
+export class User {
     public username: string;
 
     public socketId: string;
@@ -8,5 +8,3 @@ class User {
         this.username = username;
     };
 }
-
-export default User;
