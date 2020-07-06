@@ -79,9 +79,16 @@ class Game {
         await this.ModelRecord.save();
     }
 
+    public update = async (): Promise<void> => {
+        this.ModelRecord = await Game.Model.findById(this.ModelRecord.id);
+        this.field.cellTable = this.ModelRecord.cellTable;
+    }
+
     public actionTurn = async (client: Socket, cellIndex: number): Promise<boolean> => {
         const player = this._onlyPlayerAccess(client);
         if (!player) return false;
+
+        await this.update();
 
         const row = Math.floor(cellIndex / this.fieldSize);
         const col = cellIndex % this.fieldSize;

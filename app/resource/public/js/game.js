@@ -8,6 +8,23 @@ window.onload = async () => {
         socket.disconnect();
     };
 
+    socket.on("game-join-front", (cellTableFlatted) => {
+        document.querySelectorAll(".game-cell-input").forEach((node, i) => {
+            if (cellTableFlatted[i] === 0) {
+                node.disabled = false;
+                return null;
+            }
+            if (cellTableFlatted[i] === 1) {
+                node.disabled = true;
+                return null;
+            }
+            if (cellTableFlatted[i] === 2) {
+                node.disabled = true;
+                return null;
+            }
+        });
+    });
+
     socket.on("game-leave-front", async (socketId) => {
         await socket.emit("game-leave", socketId);
     });
@@ -30,8 +47,6 @@ window.onload = async () => {
     document.querySelectorAll(".game-cell-input").forEach((node, index) => {
         node.addEventListener("click", async (event) => {
             if (!event.target) {return;}
-
-            // event.target.disabled = true;
             await socket.emit("game-turn", index);
         });
     });
