@@ -1,12 +1,4 @@
-import { prop, Ref, Typegoose } from "typegoose";
-
-import { FieldSchema } from "./field";
-
-enum GAME_STATUS {
-    EMPTY = 0,
-    WAITING = 1,
-    PLAYING = 2,
-}
+import { prop, Typegoose } from "typegoose";
 
 export class GameSchema extends Typegoose {
     @prop({
@@ -15,8 +7,8 @@ export class GameSchema extends Typegoose {
     })
     name: string;
 
-    @prop({ ref: FieldSchema })
-    field: Ref<FieldSchema>;
+    @prop()
+    cellTable: number[][];
 
     @prop({
         min: 3,
@@ -37,7 +29,7 @@ export class GameSchema extends Typegoose {
     winCombination: number;
 
     @prop({
-        enum: GAME_STATUS,
+        // enum: GAME_STATUS,  // TODO: why it does not work?
         default: 0,
         // validate: {
         //     validator: value => ["no", "wait", "play"].includes(value),
@@ -58,7 +50,7 @@ export class GameSchema extends Typegoose {
     player2: string;
 
     @prop()
-    spectators: [string];
+    spectators: string[];
 }
 
 export const GameModel = new GameSchema().getModelForClass(GameSchema);
