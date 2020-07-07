@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-4"><span id="whoami"></span></div>
     </div>
-    <div id="game-field" class="game-field size-{{ fieldLength }} row justify-content-center">
+    <div id="game-field" class="game-field size-{{ fieldSize }} row justify-content-center">
         {% for i in range(0, fieldSize) %}
             {% for j in range(0, fieldSize) %}
                     {% include "partials/gameSell.html" %}
