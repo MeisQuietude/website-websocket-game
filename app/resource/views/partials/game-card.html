@@ -4,12 +4,18 @@
             <h5 class="card-title">{{ name }}</h5>
             <h6 class="card-subtitle text-muted">PvP / PvE</h6>
             <dl class="row mb-0 mt-3">
-                <dt class="col-6">Статус</dt>
-                <dd class="col-6">играют</dd>
+                <dt class="col-5">Статус</dt>
+                <dd class="col-7">
+                    {% if status == 0 %}
+                    ожидание
+                    {% elif status == 1 %}
+                    играют
+                    {% endif %}
+                </dd>
             </dl>
             <div class="row justify-content-center">
                 <a href="/game/{{ id }}"
-                   class="card-link btn-primary btn-primary-light btn-sm text-white text-center w-100">Join</a>
+                   class="card-link btn-primary btn-primary-light btn-sm text-white text-center w-100">Присоединиться</a>
             </div>
         </div>
     </div>

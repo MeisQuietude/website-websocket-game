@@ -13,6 +13,7 @@
                     <div id="gamesContainer" class="row">
                         {% for game in games %}
                             {% set name = game.name %}
+                            {% set status = game.gameStatus %}
                             {% set id = game._id %}
                             {% include "partials/game-card.html" %}
                         {% endfor %}
@@ -52,8 +53,11 @@
             </div>
         </div>
 
-        <div class="col-12 justify-content-center">
-            <button id="" class="btn btn-primary" data-toggle="modal" data-target="#createGameFormModal">Create game</button>
+        <div class="col-12 col-sm-9">
+            <div class="row justify-content-center mt-3">
+                <input type="button" class="btn btn-primary col-3" data-toggle="modal" data-target="#createGameFormModal"
+                       value="Создать комнату"/>
+            </div>
         </div>
     </div>
 </main>

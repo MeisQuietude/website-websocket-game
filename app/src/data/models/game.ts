@@ -32,7 +32,7 @@ export class GameSchema extends Typegoose {
         // enum: GAME_STATUS,  // TODO: why it does not work?
         default: 0,
         // validate: {
-        //     validator: value => ["no", "wait", "play"].includes(value),
+        //     validator: value => ["wait", "play", ...?].includes(value),
         //     message: props => `${props.value} is not a valid game status`,
         // },
     })

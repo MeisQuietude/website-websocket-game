@@ -63,13 +63,13 @@ window.onload = async () => {
 
     socket.on("game-finish-front", () => {
         vars.finished = true;
-        alert("The game has ended!");
+        alert("Игра окончена!");
         window.location.replace("/");
     });
 
     socket.on("game-finish-win-front", (playerValue) => {
         vars.finished = true;
-        const message = `Player ${playerValue} win!`;
+        const message = `Победа игрока ${playerValue}!`;
         alert(message);
         window.location.replace("/");
     });

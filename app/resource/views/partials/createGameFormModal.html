@@ -3,7 +3,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Create game</h5>
+                <h5 class="modal-title">Создание комнаты</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -11,16 +11,16 @@
             <div class="modal-body">
                 <form id="createGameForm">
                     <div class="form-group row">
-                        <label for="name" class="col-sm-2 col-form-label">Room Name:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="name" id="name">
+                        <label for="name" class="col-sm-4 col-form-label">Наименование</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="GameRoom">
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" form="createGameForm" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="submit" form="createGameForm" class="btn btn-primary">Создать</button>
             </div>
         </div>
     </div>
