@@ -14,20 +14,33 @@ window.onload = async () => {
         },
     });
 
+    const localVars = { ...vars };
+
+    localVars.finished = false;
+
     // Socket.IO
     const socket = io();
-    await socket.emit("game-join", vars.id);
+    await socket.emit("game-join", localVars.id);
 
-    window.onbeforeunload = async () => {
-        await socket.emit("game-leave", socket.id);
-        socket.disconnect();
-    };
+    window.addEventListener("beforeunload", function(e) {
+        (async () => {
+            await socket.emit("game-leave", socket.id);
+            socket.disconnect();
+        })();
+
+        if (localVars.finished || localVars.whoami === "Spectator") {
+            return undefined;
+        }
+
+        return (e || window.event).returnValue;
+    });
 
     socket.on("game-join-front", ({ cellTableFlatted, WHOAMI }) => {
+        vars.whoami = WHOAMI;
         document.querySelector("#whoami").innerHTML = WHOAMI;
         document.querySelectorAll(".game-cell-input").forEach((node, i) => {
             if (cellTableFlatted[i] === CELL_STATUS.EMPTY.backValue) {
-                node.disabled = false;
+                node.disabled = (WHOAMI === "Spectator");
                 node.value = CELL_STATUS.EMPTY.frontValue;
                 return null;
             }
@@ -49,14 +62,16 @@ window.onload = async () => {
     });
 
     socket.on("game-finish-front", () => {
+        vars.finished = true;
         alert("The game has ended!");
-        window.location.href = "/";
+        window.location.replace("/");
     });
 
     socket.on("game-finish-win-front", (playerValue) => {
+        vars.finished = true;
         const message = `Player ${playerValue} win!`;
         alert(message);
-        window.location.href = "/";
+        window.location.replace("/");
     });
 
     socket.on("message", (message) => {
