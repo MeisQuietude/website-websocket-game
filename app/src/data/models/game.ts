@@ -39,6 +39,11 @@ export class GameSchema extends Typegoose {
     gameStatus: number;
 
     @prop({
+        default: 2,
+    })
+    lastTurn: number;
+
+    @prop({
         default: false,
     })
     finished: boolean;

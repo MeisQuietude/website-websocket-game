@@ -10,9 +10,15 @@ enum IAM {
     SPECTATOR = "Spectator"
 }
 
+enum IAMValue {
+    PLAYER1 = 1,
+    PLAYER2 = 2,
+    SPECTATOR = 0
+}
+
 class Client {
     public socket: Socket;
-    public value: number;
+    public value = 0;
 
     constructor(socket: Socket) {
         this.socket = socket;
@@ -36,6 +42,7 @@ class Game {
     public spectators: Client[] = [];
 
     public field: Field;
+    public lastTurn: number;
 
     constructor(name: string, fieldSize: number, winCombination: number) {
         this.name = name;
@@ -48,10 +55,11 @@ class Game {
     public static init = async (id: string, roomClients: Namespace): Promise<Game> => {
         const gameRecord = await Game.Model.findById(id).exec();
 
-        const { name, fieldSize, winCombination, cellTable, player1, player2, spectators } = gameRecord;
+        const { name, fieldSize, winCombination, cellTable, lastTurn, player1, player2, spectators } = gameRecord;
 
         const gameInstance = new Game(name, fieldSize, winCombination);
         gameInstance.field = new Field(fieldSize, winCombination, cellTable);
+        gameInstance.lastTurn = lastTurn;
 
         if (player1) {
             gameInstance.player1 = new Client(roomClients.sockets[player1]);
@@ -69,7 +77,7 @@ class Game {
     }
 
     public save = async (): Promise<void> => {
-        const { name, fieldSize, winCombination, field } = this;
+        const { name, fieldSize, winCombination, field, lastTurn } = this;
 
         if (!this.ModelRecord) {
             this.ModelRecord = await Game.Model.create({
@@ -81,6 +89,7 @@ class Game {
         } else {
             await this.ModelRecord.updateOne({
                 cellTable: field.cellTable,
+                lastTurn,
             }).exec();
         }
 
@@ -90,18 +99,25 @@ class Game {
     public update = async (): Promise<void> => {
         this.ModelRecord = await Game.Model.findById(this.ModelRecord.id);
         this.field.cellTable = this.ModelRecord.cellTable;
+        this.lastTurn = this.ModelRecord.lastTurn;
     }
 
     public actionTurn = async (client: Socket, cellIndex: number): Promise<number> => {
-        const player = this._onlyPlayerAccess(client);
-        if (!player) return null;
-
         await this.update();
+
+        const player = this._onlyPlayerAccess(client);
+        if (
+            !player ||
+            this.lastTurn === player.value) {
+
+            return null;
+        }
 
         const { row, col } = this.translateFlatToIndex(cellIndex);
 
         if (this.field.getCellValue(row, col) == 0) {
             this.field.setCellValue(row, col, player.value);
+            this.lastTurn = player.value;
             await this.save();
             return player.value;
         }
@@ -146,7 +162,7 @@ class Game {
 
     private _setPlayer1 = async (client: Socket): Promise<void> => {
         this.player1 = new Client(client);
-        this.player1.value = 1;
+        this.player1.value = IAMValue.PLAYER1;
 
         await this.ModelRecord.updateOne({
             $set: {
@@ -158,7 +174,7 @@ class Game {
 
     private _setPlayer2 = async (client: Socket): Promise<void> => {
         this.player2 = new Client(client);
-        this.player2.value = 2;
+        this.player2.value = IAMValue.PLAYER2;
 
         await this.ModelRecord.updateOne({
             $set: {
