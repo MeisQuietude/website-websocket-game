@@ -29,7 +29,10 @@ class Events extends EventConstructor {
         }
 
         await this.game.addClient(this.socket);
-        this.socket.emit("game-join-front", [].concat(...this.game.field.cellTable));
+        this.socket.emit("game-join-front", {
+            cellTableFlatted: [].concat(...this.game.field.cellTable),
+            WHOAMI: this.game.whoami,
+        });
     }
 
     public message = (message: string): void => {

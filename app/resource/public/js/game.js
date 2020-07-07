@@ -23,7 +23,8 @@ window.onload = async () => {
         socket.disconnect();
     };
 
-    socket.on("game-join-front", (cellTableFlatted) => {
+    socket.on("game-join-front", ({ cellTableFlatted, WHOAMI }) => {
+        document.querySelector("#whoami").innerHTML = WHOAMI;
         document.querySelectorAll(".game-cell-input").forEach((node, i) => {
             if (cellTableFlatted[i] === CELL_STATUS.EMPTY.backValue) {
                 node.disabled = false;

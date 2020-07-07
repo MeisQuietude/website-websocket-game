@@ -4,6 +4,12 @@ import { Game as GameModel } from "../data";
 import { InstanceType } from "typegoose";
 import { GameSchema } from "../data/models/game";
 
+enum IAM {
+    PLAYER1 = "Player 1",
+    PLAYER2 = "Player 2",
+    SPECTATOR = "Spectator"
+}
+
 class Client {
     public socket: Socket;
     public value: number;
@@ -22,6 +28,8 @@ class Game {
     private name: string;
     private fieldSize: number;
     private winCombination: number;
+
+    public whoami: string;
 
     public player1: Client;
     public player2: Client;
@@ -111,13 +119,16 @@ class Game {
     public addClient = async (client: Socket): Promise<void> => {
         if (!this.player1) {
             await this._setPlayer1(client);
+            this.whoami = IAM.PLAYER1;
             return;
         }
         if (!this.player2) {
             await this._setPlayer2(client);
+            this.whoami = IAM.PLAYER2;
             return;
         }
         await this._addSpectator(client);
+        this.whoami = IAM.SPECTATOR;
     }
 
     public isPlayerLeave = (socketId: string): boolean => {
