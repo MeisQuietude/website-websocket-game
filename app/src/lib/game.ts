@@ -37,6 +37,7 @@ class Game {
 
     public whoami: string;
 
+    private clients: Client[] = [];
     public player1: Client;
     public player2: Client;
     public spectators: Client[] = [];
@@ -100,6 +101,8 @@ class Game {
         this.ModelRecord = await Game.Model.findById(this.ModelRecord.id);
         this.field.cellTable = this.ModelRecord.cellTable;
         this.lastTurn = this.ModelRecord.lastTurn;
+        // this.player1 = this.clients.find(client => client.socket.id === this.ModelRecord.player1);
+        // this.player2 = this.clients.find(client => client.socket.id === this.ModelRecord.player2);
     }
 
     public actionTurn = async (client: Socket, cellIndex: number): Promise<number> => {
@@ -107,6 +110,8 @@ class Game {
 
         const player = this._onlyPlayerAccess(client);
         if (
+            // !this.player1 ||
+            // !this.player2 ||
             !player ||
             this.lastTurn === player.value) {
 
@@ -127,65 +132,67 @@ class Game {
     public isWin = (flatIndex: number): number => {
         const { row, col } = this.translateFlatToIndex(flatIndex);
         const isWin_ = this.field.isWin(row, col);
-        if (isWin_ && isWin_.player) {
+        if (isWin_ && isWin_.player !== undefined) {
             return isWin_.player;
         }
     };
 
     public addClient = async (client: Socket): Promise<void> => {
+        const client_ = new Client(client);
+        this.clients.push(client_);
         if (!this.player1) {
-            await this._setPlayer1(client);
+            await this._setPlayer1(client_);
             this.whoami = IAM.PLAYER1;
             return;
         }
         if (!this.player2) {
-            await this._setPlayer2(client);
+            await this._setPlayer2(client_);
             this.whoami = IAM.PLAYER2;
             return;
         }
-        await this._addSpectator(client);
+        await this._addSpectator(client_);
         this.whoami = IAM.SPECTATOR;
     }
 
-    public isPlayerLeave = (socketId: string): boolean => {
-        return [this.player1.toString(), this.player2.toString()].includes(socketId);
+    public isPlayerLeave = (): boolean => {
+        return this.whoami !== IAM.SPECTATOR;
     }
 
     public destroyRoom = async (): Promise<void> => {
         await this.ModelRecord.updateOne({ $set: { gameStatus: 2, finished: true } }).exec();
     }
 
-    public spectatorLeave = async (socketId: string): Promise<void> => {
-        this.spectators = this.spectators.filter(client => client.toString() !== socketId);
-        await this.ModelRecord.updateOne({ $set: { spectators: this.spectators } }).exec();
+    public spectatorLeave = async (socketId: Socket): Promise<void> => {
+        this.spectators = this.spectators.filter(client => client.toString() !== socketId.id);
+        await this.ModelRecord.updateOne({ $set: { spectators: this.spectators.map(s => s.toString()) } }).exec();
     }
 
-    private _setPlayer1 = async (client: Socket): Promise<void> => {
-        this.player1 = new Client(client);
+    private _setPlayer1 = async (client: Client): Promise<void> => {
+        this.player1 = client;
         this.player1.value = IAMValue.PLAYER1;
 
         await this.ModelRecord.updateOne({
             $set: {
-                player1: client.id,
+                player1: client.socket.id,
                 gameStatus: (this.player2) ? 1 : 0,
             },
         }).exec();
     }
 
-    private _setPlayer2 = async (client: Socket): Promise<void> => {
-        this.player2 = new Client(client);
+    private _setPlayer2 = async (client: Client): Promise<void> => {
+        this.player2 = client;
         this.player2.value = IAMValue.PLAYER2;
 
         await this.ModelRecord.updateOne({
             $set: {
-                player2: client.id,
+                player2: client.socket.id,
                 gameStatus: (this.player1) ? 1 : 0,
             },
         }).exec();
     }
 
-    private _addSpectator = async (client: Socket): Promise<void> => {
-        this.spectators.push(new Client(client));
+    private _addSpectator = async (client: Client): Promise<void> => {
+        this.spectators.push(client);
 
         await this.ModelRecord.updateOne({ spectators: this.spectators.map(client_ => client_.toString()) }).exec();
     }
