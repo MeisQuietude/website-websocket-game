@@ -19,7 +19,6 @@ class Events extends EventConstructor {
         await gameInstance.save();
     }
 
-
     public join = async (id: string): Promise<void> => {
         this.socket.join(id);
         this.roomId = id;
@@ -49,21 +48,21 @@ class Events extends EventConstructor {
         this.serverIO.to(this.roomId).emit("game-turn", { cellIndex, cellStatus });
 
         const winPlayer = this.game.isWin(cellIndex);
-        if (winPlayer) {
+        if (winPlayer !== undefined) {
             // Emit about win
             this.serverIO.to(this.roomId).emit("game-finish-win-front", winPlayer);
         }
     };
 
-    public leave = async (socketId: string): Promise<void> => {
-        if (this.game.isPlayerLeave(socketId)) {
+    public leave = async (): Promise<void> => {
+        if (this.game.isPlayerLeave()) {
             // Player leaved
             await this.game.destroyRoom();
             this.serverIO.to(this.roomId).emit("game-finish-front");
             return;
         }
         // Spectator leaved
-        await this.game.spectatorLeave(socketId);
+        await this.game.spectatorLeave(this.socket);
     }
 }
 

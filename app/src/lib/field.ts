@@ -95,6 +95,21 @@ class Field {
                 player: playerValue,
             };
         }
+
+        // Draw
+        let isDrawFlag = true;
+        for (let i = 0; i < this.fieldSize && isDrawFlag; i++) {
+            for (let j = 0; j < this.fieldSize && isDrawFlag; j++) {
+                if (this.cellTable[i][j] === 0) {
+                    isDrawFlag = false;
+                }
+            }
+        }
+        if (isDrawFlag) {
+            return {
+                player: 0,
+            };
+        }
     }
 
     private checkWinSubsets = (subsets: number[][]): boolean => {
