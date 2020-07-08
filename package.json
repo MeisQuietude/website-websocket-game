@@ -9,6 +9,10 @@
     "watch": "ts-node --project app/tsconfig.dev.json app/src/index.ts",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx app/src"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MeisQuietude/course-websocket-kn.git"
+  },
   "author": "Stepan Savelyev",
   "license": "ISC",
   "nodemonConfig": {
