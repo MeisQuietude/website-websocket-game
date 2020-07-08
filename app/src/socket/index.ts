@@ -8,7 +8,7 @@ const applyEvents = (socket: Socket): void => {
 
     socket.on("disconnecting", () => {
         for (const roomKey in socket.rooms) {
-            socket.broadcast.to(roomKey).emit("game-leave-front", socket.id);
+            // socket.broadcast.to(roomKey).emit("game-leave-front", socket.id);
             socket.leave(roomKey);
         }
     });
