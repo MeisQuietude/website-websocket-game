@@ -22,10 +22,14 @@ window.onload = async () => {
     const socket = io();
     await socket.emit("game-join", localVars.id);
 
+    const finishGameFront = (message) => {
+        vars.finished = true;
+        alert(message);
+    };
+
     window.addEventListener("beforeunload", function(e) {
         (async () => {
-            await socket.emit("game-leave", socket.id);
-            socket.disconnect();
+            await socket.emit("game-leave");
         })();
 
         if (localVars.finished || localVars.whoami === "Spectator") {
@@ -57,19 +61,21 @@ window.onload = async () => {
         });
     });
 
-    socket.on("game-leave-front", async (socketId) => {
-        await socket.emit("game-leave", socketId);
-    });
-
     socket.on("game-finish-front", () => {
+        finishGameFront("Игра окончена!");
         vars.finished = true;
-        alert("Игра окончена!");
         window.location.replace("/");
     });
 
     socket.on("game-finish-win-front", (playerValue) => {
         vars.finished = true;
-        const message = `Победа игрока ${playerValue}!`;
+
+        let message;
+        if (playerValue === 0) {
+            message = "Ничья!";
+        } else {
+            message = `Победа игрока ${playerValue}`;
+        }
         alert(message);
         window.location.replace("/");
     });
