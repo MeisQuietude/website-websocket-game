@@ -41,7 +41,7 @@
     "express-session": "^1.17.1",
     "jquery": "^3.4.1",
     "mongodb": "^3.5.5",
-    "mongoose": "^5.9.20",
+    "mongoose": "^5.11.7",
     "morgan": "^1.9.1",
     "nunjucks": "^3.2.1",
     "socket.io": "^2.3.0",
